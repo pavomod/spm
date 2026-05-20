@@ -2,7 +2,7 @@
 .env
 progress
 .claude
-.assignment
+assignment
 
 # compiled binaries
 seq/seq
