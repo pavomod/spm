@@ -1,4 +1,4 @@
-*.md
+claude.md
 .env
 progress
 .claude
