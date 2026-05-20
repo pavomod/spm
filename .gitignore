@@ -1,69 +1,15 @@
-# Prerequisites
-*.d
+*.md
+.env
+progress
+.claude
+.assignment
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# compiled binaries
+seq/seq
+threads/threads
+omp_tasks/omp_tasks
+omp_ws/omp_ws
+mpi_omp/mpi_omp
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-*.so.*
-
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-# Build directories
-build/
-Build/
-build-*/
-
-# CMake generated files
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
-install_manifest.txt
-compile_commands.json
-
-# Temporary files
-*.tmp
-*.log
-*.bak
-*.swp
-
-# vcpkg
-vcpkg_installed/
-
-# debug information files
-*.dwo
-
-# test output & cache
-Testing/
-.cache/
+# benchmark outputs
+results/
