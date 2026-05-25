@@ -106,7 +106,12 @@ static IterativeResult iterative_spmv_threads(
     // Performs: epoch advance, global norm reduction, serial scale of y, pointer swap.
     // Serial scaling is a minor fraction of total work for large n (O(n) vs O(nnz)).
     auto completion = [&]() noexcept {
-        if (current_iter > 0 && (current_iter % EPOCH_LEN) == 0)
+        // Update row_shift for the NEXT iteration before workers start it.
+        // current_iter is the iter just completed; next iter = current_iter + 1.
+        // Guard current_iter+1 < NUM_ITERS to avoid a spurious update after the
+        // last iteration that would corrupt row_shift used by the final diagnostic.
+        const std::uint32_t next = current_iter + 1;
+        if (next < NUM_ITERS && (next % EPOCH_LEN) == 0)
             row_shift = (row_shift + shift_rows) % n;
 
         double total = 0.0;

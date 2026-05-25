@@ -82,20 +82,19 @@ static IterativeResult iterative_spmv_omp_ws(
     double* y = buf1.data();   // written in SpMV
 
     std::size_t row_shift = 0;
+    double norm_sq = 0.0;  // shared; reset to 0 each iter via omp single
 
     #pragma omp parallel num_threads(T)
     {
         for (std::uint32_t iter = 0; iter < NUM_ITERS; ++iter) {
 
-            // SpMV + partial norm reduction.
-            //
-            // schedule(dynamic, chunk): each thread steals 'chunk' rows at a time from a
-            // shared counter. Handles irregular load imbalance without explicit task overhead.
-            //
-            // reduction(+:norm_sq): OpenMP creates thread-private accumulators; at the
-            // implicit barrier of the 'for', all partials are summed and written back into
-            // each thread's norm_sq (all threads see the global total after the barrier).
-            double norm_sq = 0.0;
+            // Reset shared accumulator before each reduction.
+            // omp single has implicit barrier → all threads see norm_sq=0 before omp for.
+            #pragma omp single
+            norm_sq = 0.0;
+
+            // schedule(dynamic, chunk): each thread steals 'chunk' rows at a time.
+            // reduction(+:norm_sq): private copies init to 0, summed into norm_sq at barrier.
             #pragma omp for schedule(dynamic, chunk) reduction(+:norm_sq)
             for (std::size_t i = 0; i < n; ++i) {
                 const std::size_t src = (i + n - row_shift) % n;

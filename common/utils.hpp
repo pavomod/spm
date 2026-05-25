@@ -91,7 +91,7 @@ static void dump_vector(const std::string& path, const std::vector<double>& x) {
 }
 
 
-static void usage(const char* prog) {
+[[maybe_unused]] static void usage(const char* prog) {
     std::cerr
         << "Usage:\n"
         << "  " << prog << " -n N -nz K -m regular|irregular [-s seed] [--dump-vector FILE]\n\n"
