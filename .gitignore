@@ -3,6 +3,7 @@ claude.md
 progress
 .claude
 assignment
+*.sh
 
 # compiled binaries
 seq/seq
