@@ -1,7 +1,7 @@
 # Iterative SpMV — Parallel Implementations
 
 Iterative Sparse Matrix-Vector computation on an evolving sparse matrix.
-Sequential reference + C++ threads + OpenMP tasks + MPI+OpenMP.
+Sequential reference + C++ threads + OpenMP tasks + OpenMP work-sharing + MPI+OpenMP.
 
 ---
 
@@ -15,6 +15,7 @@ make all
 make -C seq
 make -C threads
 make -C omp_tasks
+make -C omp_ws
 make -C mpi_omp
 
 # Clean
@@ -37,8 +38,11 @@ Requires: `g++ >= 10` (C++20 for `std::barrier`), `libopenmpi-dev` for MPI targe
 # C++ Threads — dynamic chunk scheduling, 8 threads, chunk=64 rows
 ./threads/threads -n 500000 -nz 20000000 -m irregular -t 8 -d
 
-# OpenMP Tasks — 8 threads
-OMP_NUM_THREADS=8 ./omp_tasks/omp_tasks -n 500000 -nz 20000000 -m irregular
+# OpenMP Tasks — 8 threads, chunk size 1024
+OMP_NUM_THREADS=8 ./omp_tasks/omp_tasks -n 500000 -nz 20000000 -m irregular -c 1024
+
+# OpenMP Work-Sharing — 8 threads, chunk size 64
+OMP_NUM_THREADS=8 ./omp_ws/omp_ws -n 500000 -nz 20000000 -m irregular -c 64
 
 # MPI + OpenMP — 4 procs x 4 threads
 OMP_NUM_THREADS=4 mpirun -np 4 ./mpi_omp/mpi_omp -n 500000 -nz 20000000 -m irregular
@@ -51,21 +55,34 @@ OMP_NUM_THREADS=4 mpirun -np 4 ./mpi_omp/mpi_omp -n 500000 -nz 20000000 -m irreg
 All parallel versions must produce a Rayleigh value within relative tolerance `1e-10` of the sequential reference.
 
 ```bash
-# Step 1: generate reference dump
+# Step 1: generate sequential reference dump
 ./seq/seq -n 50000 -nz 200000 -m irregular --dump-vector /tmp/seq.dump
 
-# Step 2: generate parallel dump
+# Step 2a: C++ Threads
 ./threads/threads -n 50000 -nz 200000 -m irregular -t 4 --dump-vector /tmp/thr.dump
 
-# Step 3: element-wise diff (no output = PASS)
-awk 'NR==FNR{a[NR]=$1;next} {d=a[FNR]-$1; if(d<0)d=-d; if(d>1e-10) print NR, d}' \
-    /tmp/seq.dump /tmp/thr.dump
-```
+# Step 2b: OpenMP Tasks
+OMP_NUM_THREADS=4 ./omp_tasks/omp_tasks -n 50000 -nz 200000 -m irregular \
+    --dump-vector /tmp/omp_tasks.dump
 
-For MPI:
-```bash
+# Step 2c: OpenMP Work-Sharing
+OMP_NUM_THREADS=4 ./omp_ws/omp_ws -n 50000 -nz 200000 -m irregular \
+    --dump-vector /tmp/omp_ws.dump
+
+# Step 2d: MPI + OpenMP
 OMP_NUM_THREADS=4 mpirun -np 4 ./mpi_omp/mpi_omp -n 50000 -nz 200000 -m irregular \
     --dump-vector /tmp/mpi.dump
+
+# Step 3: element-wise diff for each dump (no output = PASS)
+awk 'NR==FNR{a[NR]=$1;next} {d=a[FNR]-$1; if(d<0)d=-d; if(d>1e-10) print NR, d}' \
+    /tmp/seq.dump /tmp/thr.dump
+
+awk 'NR==FNR{a[NR]=$1;next} {d=a[FNR]-$1; if(d<0)d=-d; if(d>1e-10) print NR, d}' \
+    /tmp/seq.dump /tmp/omp_tasks.dump
+
+awk 'NR==FNR{a[NR]=$1;next} {d=a[FNR]-$1; if(d<0)d=-d; if(d>1e-10) print NR, d}' \
+    /tmp/seq.dump /tmp/omp_ws.dump
+
 awk 'NR==FNR{a[NR]=$1;next} {d=a[FNR]-$1; if(d<0)d=-d; if(d>1e-10) print NR, d}' \
     /tmp/seq.dump /tmp/mpi.dump
 ```
@@ -89,7 +106,7 @@ awk 'NR==FNR{a[NR]=$1;next} {d=a[FNR]-$1; if(d<0)d=-d; if(d>1e-10) print NR, d}'
 SPARSE_ITERATION_[SEQ|THREADS|OMP_TASKS|MPI_OMP]
 rows=N  total_nnz=K  min_nnz_per_row=...  max_nnz_per_row=...  avg_nnz_per_row=...
 generation_time_sec=...
-[num_threads=T]          <- parallel versions only
+[num_threads=T]          
 
 rayleigh=<15 sig digits>
 checksum=0x<hex>
@@ -107,6 +124,6 @@ Time (sec) = <6 decimal places>
 | `-m regular\|irregular` | all | required |
 | `-s seed` | all | 111 |
 | `--dump-vector FILE` | all | off |
-| `-t T` | threads | hardware_concurrency |
+| `-t T` | threads, omp_tasks, omp_ws, mpi_omp | hardware_concurrency / OMP_NUM_THREADS |
 | `-d` | threads | off (static mode) |
-| `-c K` | threads | 64 rows |
+| `-c K` | threads, omp_tasks, omp_ws, mpi_omp | 64 rows |
