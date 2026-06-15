@@ -1,0 +1,8 @@
+SPARSE_ITERATION_OMP_TASKS
+rows=500000  total_nnz=20000000  min_nnz_per_row=5  max_nnz_per_row=731  avg_nnz_per_row=40.000
+generation_time_sec=0.483
+num_threads=2
+
+rayleigh=4.223260535478196
+checksum=0x2a657a4c582e44b2
+Time (sec) = 28.912637

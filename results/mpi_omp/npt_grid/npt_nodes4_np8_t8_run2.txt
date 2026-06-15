@@ -1,0 +1,12 @@
+SPARSE_ITERATION_MPI_OMP
+rows=2000000  total_nnz=80000000  min_nnz_per_row=5  max_nnz_per_row=731  avg_nnz_per_row=40.000
+generation_time_sec=2.818
+num_procs=8  num_threads_per_proc=8
+
+rayleigh=4.223544292121099
+checksum=0x7de946c2613eedd4
+Time (sec) = 72.137345
+local_compute_time_sec=43.170991
+communication_time_sec=28.865745
+reduction_time_sec=0.076568
+epoch_transition_time_sec=0.000033

@@ -10,6 +10,3 @@ threads/threads
 omp_tasks/omp_tasks
 omp_ws/omp_ws
 mpi_omp/mpi_omp
-
-# benchmark outputs
-results/

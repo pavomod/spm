@@ -1,0 +1,8 @@
+SPARSE_ITERATION_THREADS
+rows=500000  total_nnz=20000000  min_nnz_per_row=5  max_nnz_per_row=731  avg_nnz_per_row=40.000
+generation_time_sec=0.481
+num_threads=4
+
+rayleigh=4.223260535478293
+checksum=0x19945ec30ab91f41
+Time (sec) = 43.272450

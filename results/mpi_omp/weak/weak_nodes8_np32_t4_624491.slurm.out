@@ -1,0 +1,36 @@
+SPARSE_ITERATION_MPI_OMP
+rows=16000000  total_nnz=640000000  min_nnz_per_row=5  max_nnz_per_row=731  avg_nnz_per_row=40.000
+generation_time_sec=23.410
+num_procs=32  num_threads_per_proc=4
+
+rayleigh=4.223321237460210
+checksum=0x618def6ef991ee3f
+Time (sec) = 431.361351
+local_compute_time_sec=139.789689
+communication_time_sec=179.278590
+reduction_time_sec=112.247498
+epoch_transition_time_sec=0.000035
+SPARSE_ITERATION_MPI_OMP
+rows=16000000  total_nnz=640000000  min_nnz_per_row=5  max_nnz_per_row=731  avg_nnz_per_row=40.000
+generation_time_sec=23.395
+num_procs=32  num_threads_per_proc=4
+
+rayleigh=4.223321237460215
+checksum=0xaab6c1a28d36e754
+Time (sec) = 431.299071
+local_compute_time_sec=140.099906
+communication_time_sec=179.293676
+reduction_time_sec=111.859945
+epoch_transition_time_sec=0.000029
+SPARSE_ITERATION_MPI_OMP
+rows=16000000  total_nnz=640000000  min_nnz_per_row=5  max_nnz_per_row=731  avg_nnz_per_row=40.000
+generation_time_sec=23.470
+num_procs=32  num_threads_per_proc=4
+
+rayleigh=4.223321237460206
+checksum=0xd6d4c094213916b1
+Time (sec) = 431.587932
+local_compute_time_sec=139.768045
+communication_time_sec=179.312533
+reduction_time_sec=112.462413
+epoch_transition_time_sec=0.000041

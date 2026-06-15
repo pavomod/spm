@@ -104,7 +104,7 @@ static IterativeResult iterative_spmv_omp_ws(
                 y[i]    = yi;
                 norm_sq += yi * yi;
             }
-            // Implicit barrier: all y[i] written, norm_sq = global ||y||² in each thread.
+            // Implicit barrier: all y[i] written, norm_sq holds global ||y||².
 
             // Normalize y, swap buffers, then pre-compute epoch shift for the next iteration.
             // Pre-computing here (at end of iter i) is equivalent to the sequential code
